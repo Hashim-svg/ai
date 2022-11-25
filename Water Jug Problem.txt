@@ -1,0 +1,88 @@
+from collections import defaultdict
+import random
+
+
+class water_jug_problem:
+    def __init__(self):
+        self.graph = defaultdict(list)
+
+    def add_edge(self, node, edge):
+        self.graph[node].append(edge)
+
+    def push_into_queue(self, s):
+        queue = []
+        path = []
+        queue.append(s)
+        path.append(s)
+
+        while queue:
+            queue.pop()
+            # if first jug is empty then fill it and push current state to stack
+            if s[0] == 0:
+                a = list(s)
+                a[0] = 4
+                queue.append(s)
+                path.append(s)
+            # if second jug is empty then fill it and push current state to stack
+            elif s[1] == 0:
+                a = list(s)
+                a[1] = 3
+                queue.append(s)
+                path.append(s)
+            # if first jug is full then empty it and push current state to stack
+            elif s[0] == 4 and s[1] == random.randint(0, 3):
+                a = list(s)
+                a[0] = 0
+                queue.append(s)
+                path.append(s)
+
+            # if second jug is full then empty it and push current state to stack
+            elif s[0] == random.randint(0, 4) and s[1] == 3:
+                a = list(s)
+                a[1] = 0
+                queue.append(s)
+                path.append(s)
+
+            # transfer water from jug1 to jug2
+            elif s[0] == random.randint(1, 4) and s[1] == random.randint(0, 2):
+                k = 0
+                while s[1] != 3:
+                    a = list(s)
+                    a[1] += 4
+                    k += 1
+                a[0] = a[0] - k
+                queue.append(s)
+                path.append(s)
+
+            # transfer water from jug2 to jug1
+            elif s[0] == random.randint(0, 3) and s[1] == random.randint(1, 3):
+                k = 0
+                while s[0] != 4:
+                    a = list(s)
+                    a[0] += 1
+                    k += 1
+                a[1] = a[1] - k
+                queue.append(s)
+                path.append(s)
+
+        return path
+
+    def procedure(self, start, goal):
+        if start == goal:
+            print("Goal State Founded !")
+            return True
+        else:
+            path = self.push_into_queue(start)
+            print("Path to obtain Goal is : ", path)
+
+
+# creating object of class
+problem = water_jug_problem()
+
+# defining start & goal state
+y = random.randint(0, 3)
+start_state = (0, 0)
+goal_state = (2, y)
+
+problem.procedure(start_state, goal_state)
+
